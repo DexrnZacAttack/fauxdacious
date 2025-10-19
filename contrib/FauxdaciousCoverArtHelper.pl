@@ -405,12 +405,13 @@ elsif ($ARGV[0] =~ /^ALBUM/i)   #WE'RE AN ALBUM TITLE, GET COVER ART FROM TAGS, 
 	#NO LONGER NEEDED?: $title =~ s/\%7c\%7c.*$//i;  #HANDLE SOME UGLY TITLES IN FORMAT:  "<title> || blah blah .."
 	$title =~ s/\%20$//;  #WHACK OFF TRAILING SPACE.
 	$artist =~ s/\%20$//;  #WHACK OFF TRAILING SPACE.
-	my $albart_FN = $album;    #FORMAT FILENAME AS:  <album>[__<artist>] (AS SOME ALBUMS FROM DIFFERENT ARTISTS SHARE SAME NAME)!
+	my $albart_FN;    #FORMAT FILENAME AS:  <album>[__<artist>] (AS SOME ALBUMS FROM DIFFERENT ARTISTS SHARE SAME NAME)!
 	if ($artist =~ /\S/ && $artist ne '_') {
-		$albart_FN .= "__$ARGV[3]";
+		$albart_FN = "$ARGV[3]_";
 	} elsif ($title =~ /\S/ && $title ne '_') {
-		$albart_FN .= "__$ARGV[4]";
+		$albart_FN = "$ARGV[4]_";
 	}
+	$albart_FN .= $album;
 	$albart_FN =~ s/\%20$//;      #WHACK OFF TRAILING SPACE.
 	$albart_FN =~ s/\%20/ /g;     #UNESCAPE OTHER SPACES.
 	$albart_FN =~ s#\s*\/\s*#\_#; #ELIMINATE SLASHES (FILE NAME IS *NOT* A PATH!
@@ -553,6 +554,7 @@ WEBSEARCH:
 					$tried = $lf->tried();
 					&albumart_done($tried);
 					print STDERR "i:Albumart tried lyrics sites: ($tried).\n"  if ($DEBUG); #MUST BE HERE (writeArtImage EXITS on success!)
+
 					&writeArtImage($image_url, $art2fid, '_tmp_albumart')
 							if ($image_url && $image_url !~ /(?:default|place\-?holder|nocover)/i); #EXCLUDE DUMMY-IMAGES.
 				} else {
